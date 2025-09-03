@@ -1,6 +1,6 @@
 # Widget App - FastAPI + React (Vite) POC (POC)
 
-A production-ready FastAPI **proof-of-concept** fo Widget Company with PostgreSQL, SQLAlchemy, Vite+React frontend, and clean service-layer pricing logic. Implements basket pricing rules, delivery charges, and a buy-one-get-second-half-price offer. This is just a proof of concept I have made for the demonstration purposes. All the information of the project or the documeneted that was provided to me is `POC_WIDGET_CO.docx`. You can check it out for more info or what was asked of this project. I extended some functionality too.
+A production-ready FastAPI **proof-of-concept** fo Widget Company with PostgreSQL, SQLAlchemy, Vite+React frontend, and clean service-layer pricing logic. Implements basket pricing rules, delivery charges, and offers. This is just a proof of concept I have made for the demonstration purposes. All the information of the project or the documeneted that was provided to me is in `POC_WIDGET_CO.docx`. You can check it out for more info or what was asked of this project. I extended some functionality too which I thought should be added in it.
 
 ## Stack
 - Backend: FastAPI, SQLAlchemy, pydantic-settings
