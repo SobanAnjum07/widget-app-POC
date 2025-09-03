@@ -1,6 +1,6 @@
-Widget App - FastAPI + React (Vite) POC
+# Widget App - FastAPI + React (Vite) POC (POC)
 
-A production-ready FastAPI proof-of-concept fo Widget Company with PostgreSQL, SQLAlchemy, Vite+React frontend, and clean service-layer pricing logic. Implements basket pricing rules, delivery charges, and a buy-one-get-second-half-price offer.
+A production-ready FastAPI **proof-of-concept** fo Widget Company with PostgreSQL, SQLAlchemy, Vite+React frontend, and clean service-layer pricing logic. Implements basket pricing rules, delivery charges, and a buy-one-get-second-half-price offer. This is just a proof of concept I have made for the demonstration purposes.
 
 ## Stack
 - Backend: FastAPI, SQLAlchemy, pydantic-settings
@@ -59,7 +59,7 @@ npm run dev
 - Env: `VITE_API_BASE_URL` (docker-compose sets to http://localhost:8000/api/v1)
 
 ## Assumptions
-- Delivery rules tiers: 0 => 4.95, 50 => 2.95, 90 => 0.0 (largest `min_total <= order_total` wins)
-- Offers currently: `BOGO_HALF` per product; extend via `OfferType` and BasketService
-- Monetary values rounded to 2 decimals; stored as `Numeric(10,2)`
+These are the assumptions I have made whole building this proof of concept.
+- Delivery rules tiers: 0 => 4.95, 50 => 2.95, 90 => 0.0 (largest `min_total <= order_total` wins) (this was given in the document).
+- There are some offers already made in the project but if you want to extend the offer like buy one get two free or something like that you can extend via `OfferType` and BasketService.
 
