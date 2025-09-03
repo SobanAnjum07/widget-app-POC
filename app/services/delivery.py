@@ -1,14 +1,3 @@
-# from typing import List
-# from ..models.domain import DeliveryChargeRule
-
-
-# def compute_delivery_charge(order_total: float, rules: List[DeliveryChargeRule]) -> float:
-#     if not rules:
-#         return 0.0
-#     applicable = [r for r in rules if float(r.min_total) <= order_total]
-#     if applicable:
-#         return float(sorted(applicable, key=lambda r: float(r.min_total))[-1].charge)
-#     return float(sorted(rules, key=lambda r: float(r.charge))[-1].charge)
 
 from typing import List
 from ..models.domain import DeliveryChargeRule

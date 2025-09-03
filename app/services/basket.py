@@ -1,7 +1,7 @@
 from typing import Dict
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from ..models import domain as dm
+from ..models.domain import Product, DeliveryChargeRule, Offer
 from .offers import compute_offer_discount
 from .delivery import compute_delivery_charge
 from ..utils.calculations import round2
@@ -14,10 +14,10 @@ class BasketService:
         if not basket_items:
             return 0.0, 0.0, 0.0, 0.0
 
-        products = self.db.execute(select(dm.Product)).scalars().all()
+        products = self.db.execute(select(Product)).scalars().all()
         catalogue = {p.code: p for p in products}
-        rules = self.db.execute(select(dm.DeliveryChargeRule).order_by(dm.DeliveryChargeRule.min_total.asc())).scalars().all()
-        offers = self.db.execute(select(dm.Offer)).scalars().all()
+        rules = self.db.execute(select(DeliveryChargeRule).order_by(DeliveryChargeRule.min_total.asc())).scalars().all()
+        offers = self.db.execute(select(Offer)).scalars().all()
 
         subtotal = 0.0
         for code, qty in basket_items.items():
@@ -26,7 +26,7 @@ class BasketService:
             subtotal += float(catalogue[code].price) * qty
 
         # Aggregate offers by product
-        offers_by_product: dict[str, list[dm.Offer]] = {}
+        offers_by_product: dict[str, list[Offer]] = {}
         for offer in offers:
             if offer.product_code:
                 offers_by_product.setdefault(offer.product_code, []).append(offer)

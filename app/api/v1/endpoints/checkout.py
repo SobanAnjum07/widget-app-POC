@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from ...dependencies import get_db_session
-from ....models import schemas as sc
+from ....models.schemas import BasketTotalRequest, BasketTotalResponse
 from ....services.basket import BasketService
 
 router = APIRouter()
 
 
-@router.post("/total", response_model=sc.BasketTotalResponse)
-def total(payload: sc.BasketTotalRequest, db: Session = Depends(get_db_session)):
+@router.post("/total", response_model=BasketTotalResponse)
+def total(payload: BasketTotalRequest, db: Session = Depends(get_db_session)):
     basket_map: dict[str, int] = {}
     for item in payload.items:
         basket_map[item.product_code] = basket_map.get(item.product_code, 0) + item.quantity
@@ -18,6 +18,6 @@ def total(payload: sc.BasketTotalRequest, db: Session = Depends(get_db_session))
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    return sc.BasketTotalResponse(
+    return BasketTotalResponse(
         subtotal=subtotal, discount=discount, delivery=delivery, total=total_
     )

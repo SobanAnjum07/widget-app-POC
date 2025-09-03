@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from ..models import domain as dm
+from ..models.domain import Product, DeliveryChargeRule, Offer, OfferType
 from ..core.exceptions import NotFoundError, ConflictError
 
 
@@ -10,25 +10,25 @@ class CatalogueService:
 
     # Products CRUD
     def list_products(self):
-        return self.db.execute(select(dm.Product).order_by(dm.Product.code.asc())).scalars().all()
+        return self.db.execute(select(Product).order_by(Product.code.asc())).scalars().all()
 
-    def get_product(self, code: str) -> dm.Product:
-        product = self.db.execute(select(dm.Product).where(dm.Product.code == code)).scalar_one_or_none()
+    def get_product(self, code: str) -> Product:
+        product = self.db.execute(select(Product).where(Product.code == code)).scalar_one_or_none()
         if not product:
             raise NotFoundError("Product not found")
         return product
 
-    def create_product(self, code: str, name: str, price: float) -> dm.Product:
-        existing = self.db.execute(select(dm.Product).where(dm.Product.code == code)).scalar_one_or_none()
+    def create_product(self, code: str, name: str, price: float) -> Product:
+        existing = self.db.execute(select(Product).where(Product.code == code)).scalar_one_or_none()
         if existing:
             raise ConflictError("Product code already exists")
-        product = dm.Product(code=code, name=name, price=price)
+        product = Product(code=code, name=name, price=price)
         self.db.add(product)
         self.db.commit()
         self.db.refresh(product)
         return product
 
-    def update_product(self, code: str, name: str | None, price: float | None) -> dm.Product:
+    def update_product(self, code: str, name: str | None, price: float | None) -> Product:
         product = self.get_product(code)
         if name is not None:
             product.name = name
@@ -45,17 +45,17 @@ class CatalogueService:
 
     # Delivery rules CRUD
     def list_delivery_rules(self):
-        return self.db.execute(select(dm.DeliveryChargeRule).order_by(dm.DeliveryChargeRule.min_total.asc())).scalars().all()
+        return self.db.execute(select(DeliveryChargeRule).order_by(DeliveryChargeRule.min_total.asc())).scalars().all()
 
-    def create_delivery_rule(self, min_total: float, charge: float) -> dm.DeliveryChargeRule:
-        rule = dm.DeliveryChargeRule(min_total=min_total, charge=charge)
+    def create_delivery_rule(self, min_total: float, charge: float) -> DeliveryChargeRule:
+        rule = DeliveryChargeRule(min_total=min_total, charge=charge)
         self.db.add(rule)
         self.db.commit()
         self.db.refresh(rule)
         return rule
 
-    def update_delivery_rule(self, rule_id: int, min_total: float | None, charge: float | None) -> dm.DeliveryChargeRule:
-        rule = self.db.get(dm.DeliveryChargeRule, rule_id)
+    def update_delivery_rule(self, rule_id: int, min_total: float | None, charge: float | None) -> DeliveryChargeRule:
+        rule = self.db.get(DeliveryChargeRule, rule_id)
         if not rule:
             raise NotFoundError("Delivery rule not found")
         if min_total is not None:
@@ -67,7 +67,7 @@ class CatalogueService:
         return rule
 
     def delete_delivery_rule(self, rule_id: int) -> None:
-        rule = self.db.get(dm.DeliveryChargeRule, rule_id)
+        rule = self.db.get(DeliveryChargeRule, rule_id)
         if not rule:
             raise NotFoundError("Delivery rule not found")
         self.db.delete(rule)
@@ -75,22 +75,22 @@ class CatalogueService:
 
     # Offers CRUD
     def list_offers(self):
-        return self.db.execute(select(dm.Offer)).scalars().all()
+        return self.db.execute(select(Offer)).scalars().all()
 
-    def create_offer(self, type_: dm.OfferType, product_code: str | None) -> dm.Offer:
+    def create_offer(self, type_: OfferType, product_code: str | None) -> Offer:
         existing = self.db.execute(
-            select(dm.Offer).where(dm.Offer.type == type_, dm.Offer.product_code == product_code)
+            select(Offer).where(Offer.type == type_, Offer.product_code == product_code)
         ).scalar_one_or_none()
         if existing:
             raise ConflictError("Offer already exists for product")
-        offer = dm.Offer(type=type_, product_code=product_code)
+        offer = Offer(type=type_, product_code=product_code)
         self.db.add(offer)
         self.db.commit()
         self.db.refresh(offer)
         return offer
 
-    def update_offer(self, offer_id: int, type_: dm.OfferType | None, product_code: str | None) -> dm.Offer:
-        offer = self.db.get(dm.Offer, offer_id)
+    def update_offer(self, offer_id: int, type_: OfferType | None, product_code: str | None) -> Offer:
+        offer = self.db.get(Offer, offer_id)
         if not offer:
             raise NotFoundError("Offer not found")
         if type_ is not None:
@@ -102,7 +102,7 @@ class CatalogueService:
         return offer
 
     def delete_offer(self, offer_id: int) -> None:
-        offer = self.db.get(dm.Offer, offer_id)
+        offer = self.db.get(Offer, offer_id)
         if not offer:
             raise NotFoundError("Offer not found")
         self.db.delete(offer)

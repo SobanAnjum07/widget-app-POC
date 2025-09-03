@@ -1,8 +1,8 @@
 from typing import Dict, List
 from sqlalchemy.orm import Session
-from .models import Product, DeliveryChargeRule, Offer, OfferType
-from .utils.calculations import round2
-
+from ..models.domain import Product, DeliveryChargeRule, Offer      
+from ..utils.calculations import round2
+from .offers import compute_offer_discount
 
 class PricingService:
     def __init__(self, db: Session):
@@ -37,16 +37,12 @@ class PricingService:
             subtotal += float(catalogue[code].price) * qty
 
         discount = 0.0
-        # Apply offers - currently only BOGO_HALF per product
         for offer in offers:
-            if offer.type == OfferType.BOGO_HALF and offer.product_code:
+            if offer.product_code:
                 code = offer.product_code
                 if code in basket_items:
                     qty = basket_items[code]
-                    if qty >= 2:
-                        price = float(catalogue[code].price)
-                        discounted_items = qty // 2
-                        discount += discounted_items * (price / 2)
+                    discount += compute_offer_discount(offer.type, qty, float(catalogue[code].price))
 
         order_total = subtotal - discount
 
